@@ -1,0 +1,393 @@
+Next release
+============
+
+0.9.0 (2013-01-29)
+==================
+
+Updates Fixes
+---------
+- Added a bash script to count the bh pipeR predictions found, the ones that are expressed, and see how predictions of them can be recovered by the anchoring the queries with promoters.
+
+0.8.9 (2013-01-14)
+==================
+
+Updates Fixes
+---------
+- Added in the utility the scripts to convert the exon gtf files to introns, to promoters, and to promoter anchored gtfs.
+- Added in the utility two scripts to check the pipeR predictions biotypes, and to compare them with respect to the biotypes of the queries
+
+0.8.8 (2013-01-08)
+==================
+
+Updates Fixes
+---------
+- Added the compare_3_heatmaps.R script
+
+
+0.8.7 (2012-12-28)
+==================
+
+Updates Fixes
+---------
+- Added in the utility folderthe intersection_mapping.pl script
+
+
+0.8.6 (2012-12-22)
+==================
+
+Updates Fixes
+---------
+- Pablo fixed a problem in exonerateRemapping.pl at line 84. This had to do with the ortholog mapping mode
+
+
+0.8.5 (2012-11-14)
+==================
+
+Updates Fixes
+---------
+- update read statistics. Now the gtf_map_exclude are removed iteratively and do not accumulate
+
+
+0.8.4 (2012-11-11)
+==================
+
+Updates Fixes
+---------
+- fixed a bug in ortholog finder
+
+
+0.8.3 (2012-11-9)
+==================
+
+Updates Fixes
+---------
+- fixed a bug in promoters_check and ortholog finder
+
+
+0.8.2 (2012-11-8)
+==================
+
+Updates Fixes
+---------
+- fixed a couple of small bugs in extractFeatures
+
+0.8.1 (2012-11-6)
+==================
+
+Updates Fixes
+---------
+- added the graphs.R in the utility folder
+
+0.8.0 (2012-11-6)
+==================
+
+Updates Fixes
+---------
+- updated readStatistics.pl (now it is possible to exclude some specific line from the gtf_map) and overlapStatistics.pl.
+
+
+0.7.9 (2012-11-2)
+==================
+
+Updates Fixes
+---------
+- updated readStatistics.pl. Now it prints in the log file the million mapped reads
+
+
+0.7.8 (2012-10-31)
+==================
+
+Updates Fixes
+---------
+- fixed a bug in repeatCoverage.pl. Before the ex file was wrong because the grep was wrong. Now it runs a grep -P
+
+
+0.7.7 (2012-10-31)
+==================
+
+Updates Fixes
+---------
+- fixed a bug in readStatistics.pl. Now the script computes correctly the exon expresion if multiple bam files are provided. Now the readStatistics.pl scripts also return raw read counts
+
+
+0.7.6 (2012-10-29)
+==================
+
+Updates Fixes
+---------
+- fixed a bug in repeatCoverage.pl. The %bh hash needed to be reinitializated for each fasta
+
+
+0.7.5 (2012-10-28)
+==================
+
+Updates Fixes
+---------
+- updated the repeatCoverage.pl. Now it generates in results both .all and .bh files. The first consider the one2many mapping, the second just the best hit.
+The best hit is defined as the blast hit coming first (best blast evalue). If for a certain repeat threshold the hit1 is missing, then the next available it will be taken (es. hit2).
+- all the quality check script have been updated consequently
+
+
+
+0.7.4 (2012-10-27)
+==================
+
+Updates Fixes
+---------
+- updated extractFeatures.pl readStatistics.pl and overlapStatistics.pl. Now they take the input from the results/ folder and not from EXONERATE_OUT/, and they consider the repeat coverage chosed by the user. WARNING-- These scripts have been updated but not tested yet
+
+
+0.7.3 (2012-10-25)
+==================
+
+Updates Fixes
+---------
+- Fixed a bug in exon2transcript.pl. Now if works even for multimapping experiments (if parse the hitName, not the transcriptName). The extractFeatures.pl script in the qualitycheck section has also been updated for the same reason. WARNING-- The script has been updated but not tested yet
+- Also the transcript2gene.pl script has been updated (with <= insted of <)
+
+
+
+0.7.2 (2012-10-23)
+==================
+
+Updates Fixes
+---------
+- The heatmap.R and heatmap_forecedTreeOfLife.R have been updated. Now it use the library fastcluster to boost the hclust function and make it possible the heatmap computation for huge tables (i.e. 17000 transcripts). The dendrogram is computed but not plotted otherwise it run into a stuck overflow problem
+- The sim2family.pl script was updated. Now if a query finds multiple hits, it return the percent identity score with homolog with the best score
+
+
+0.7.1 (2012-10-17)
+==================
+
+Updates Fixes
+---------
+- PipeR now specify the parameter -S $SHELL to run on the cluster. This is fundamental otherwise the shell it runs on the cluster in amazon are not bash by default! So this implementation helps pipeR to run on amazon
+
+
+0.7.0 (2012-10-16)
+==================
+
+Updates Fixes
+---------
+- Updated the manual and fixed an illegal division by zero appearing in dummy tests of the repeatCoverage.pl
+
+
+0.6.9 (2012-10-11)
+==================
+
+Updates Fixes
+---------
+- Major organization change. Now the qualityCheck and the utility folder became subfolders of the script folder
+- Fixed a small buf in extractFeatures.pl. Now if a promoter passes the chromosome begin, the start is set to 1 . No measure is adopted yet to handle the promoters passing chromosome end
+- Now the reciprocal blast can generate, for a given query, more than one ortholog.
+
+
+0.6.8 (2012-10-06)
+==================
+
+Updates Fixes
+---------
+- Fixed a bug in repeatCoverage.pl
+
+
+0.6.7 (2012-10-03)
+==================
+
+Updates Fixes
+---------
+- Added the script qualityCheck/utility/family2matrix.pl. Once the EXONERATE_OUT is available, it generates in the results folder two .csv files, one with the size of the family in various species, one with the difference in number of homologs between a certain reference species and all the other species (i.e. family expansion and family contractions)
+
+0.6.6 (2012-10-03)
+==================
+
+Updates Fixes
+---------
+- Now PipeR consider a repeat coverage threshold (repeatThreshold, default 20). All the homologs called by exonerate will be discarted if their nucleotide have a repeat coverage higher than the threshold
+
+
+0.6.5 (2012-10-02)
+==================
+
+Updates Fixes
+---------
+- The exonerate coverage threshold has been changed. Gefore I considered all the homologs spanning at least the 70% of the query. Now I am considering all the homologs in which at least the 70% of the nucleotides of the query are aligned
+
+0.6.4 (2012-10-02)
+==================
+
+Updates Fixes
+---------
+- It was added the repeatCoverage.pl, the exonGTF_2_transcriptGTF.pl that generate theur output directly in the results folder
+- A small bug in transcriptGTF_2_genes.pl was fixed
+
+0.6.3 (2012-10-01)
+==================
+
+Updates Fixes
+---------
+- Included all the compesatory mutation analysis: computing RNAalifold secondary structures, computing the Stockholm format files, computing the compensatory mutations
+- Now all the results go to the results folder 
+- The heatmap.R script has been updated so that it accept two arguments, the input similarity.csv file and the output directory. The file name is now conservation_map.png
+- The utility script viennaStructuralAligner.pl has been included in the utility folder
+- The startPipeline.pl has been updated including the new features
+- The manual has been updated
+
+
+0.6.2 (2012-09-20)
+==================
+
+Updates Fixes
+---------
+- startPipeline.pl now include by default the low complexity and low case filtering blast commands in the blastConfig file
+- In the tutorial, the 5 query input file has been updated (different header)
+- The Manual has been extendended. Is not yet final, but is much better than before
+- Two typos in the createInput script have been fixed
+- The files pruned_tree_of_life and heatmap_foreced_tree_of_life.R were added to the utility folder
+
+
+0.6.1 (2012-09-10)
+==================
+
+Updates Fixes
+---------
+- The script transcriptGTF_2_geneGTF.pl has been included in the utility folder. This script can be used to guess the genes in a target genomes defined as separate transcript clusters.
+
+
+
+0.6.0 (2012-08-08)
+==================
+
+Updates Fixes
+---------
+- The scripts overlapStatistics.pl and readStatistics.pl have been updated so that they are now usable when pipeR is run exhaustively. This means that each homolog returned by pipeR is considered a different transcript. To do that now the scripts are parsing by "hitName" and not by "transcript_id" anymore. This is because there will be (if pipeR run exhaustively) more homologs for the same transcript_id
+
+
+
+0.5.9 (2012-08-02)
+==================
+
+Updates Fixes
+---------
+- The createDatabase.pl has been updated so that it manages to handle input genomes not well assempled (many contigs). During splitting of the contigs in the chr/ folder the header are checked and possibly fixed if there are strange symbols (pipe, parentesis, spaces..). Then if the contigs are less than 250 these are passed through STDIN to xdformat for the formatting. If the contigs (now splitted in files) are more than 250 the list risks to be too long and therefore it is required to concatenate back the contigs in a uniq genome multifasta file (but now with corrected headers) and pass this single file to xdformat. It is slower but it is perfectly safe and works good for badly assembled genomes.
+
+
+0.5.8 (2012-07-31)
+==================
+
+Updates Fixes
+---------
+- The heatmap.R script has been fixed so that it manages to handle also situations in which just a genome was screened (a single column output).
+
+
+0.5.7 (2012-07-29)
+==================
+
+Updates Fixes
+---------
+- Now it is possible to privide together with a normal query, a queryPromoterAnchored file. This is a fasta file having exactly the same headers of the query file, but each sequence include uppstream the promoter region (e.g 500 nt) which is know to be more conserved than the transcript itself. PipeR will blast the queryPromoterAnchored instead of the standard query. Then the exonerate will remap using the normal query file (without promoter).
+- The scripts that have been changed are the startPipeline.pl and the blastSearch.pl scripts.
+
+
+0.5.6 (2012-06-28)
+==================
+
+Updates Fixes
+---------
+- In case the reference genome is provided, it is the createDetabase.pl script to set up the reference database. Before it was orthologFinder.pl doing it, but now it is not appropriate anymore (as the various exonerate can be be splitted on parallel there might be some conflict)
+- StartPipeline.pl now check that both reference and query_gtf (if provided) share the same syntax (e.g. with or without the label "chr")
+- The temporary orthologFile generated by exonerateSearch.pl have now names associated on the split (i.e. uniq names)
+
+
+
+0.5.5 (2012-05-10)
+==================
+
+Updates Fixes
+---------
+
+- Edited startPipeline.pl. The pipeline is now able to run the splitExonerate option (not by deafault) to boost the exonerate mapping step. It creates a splitExonerate.sh shell script that generates a splitting of the blast mf2 files. Each split contains a part of the blast hits (the splits by default consider the blast output of 500 queries). To generate these splits it uses unix command grep. Since these grep might take a lot of time these grep are implemented to run in the cluster (eit the splitExonerate to choose the queue with -q) . Then separate exonerate executable are generate for each mf2 split and run on the cluster as well. finally the results are concatenated by species name.
+
+- Fixed a small bug in exonerateRemapping.pl. The script was reading the mf2 list considering the blocks of hits of different queries. The way in which the parsing of the query name in the mf2 file was wrong and it failed when one query name was included into another (es.QUERY_A   and  QUERY_A_2). Now it is fixed
+
+- Improved exonerateRemapping.pl. Now the script is genaring temporary "currentQuery" and "currentTarget" names that include also the mf2 file name. This is safer because it might happen that you run multiple exonerate in the cluster. Then each script is checking for the existence of a certain file name. If the file name it is not used it s possible that gets used by different job at the same time. Now it is impossible since different jobs relates to different mf2 files (that have different name). 
+
+
+0.5.4 (2012-05-27)
+==================
+
+Updates Fixes
+---------
+
+- Added the utility script compareHeatmaps.R. This tools converts two input pipeR heatmap into distributions and compare them with a wilkoxon test to check if these are statistically different. It runs this non-parametric test as the two distribution are not expected to be normal. Actually the most common case is that these are bi-modal. This script allows to compare heatmaps generated out of different amount of queries (i.e. 2 different transcript sets)
+
+- Added the utility script RPKManalysis_NZgraph_and_histograms.R. This tool accepts the read_statistics.pl output of various mapping experiments. It measures the Z-Score for each of them and generate an NZ-graph comprising the Z score and N, the number of mapped transcripts for each method
+
+
+0.5.3 (2012-05-23)
+==================
+
+Updates Fixes
+---------
+
+- Updated create_input.pl. Now it creates symbolic links to the query (or query_gtf) file rather than copying it
+
+
+
+
+0.5.2 (2012-05-17)
+==================
+
+Documentation
+-------------
+
+- Adding tutorial, doc, bin and MANUAL.txt
+
+Updates Fixes
+---------
+
+- Updated overlap_statistics.pl. Now the random projections are done exactly as in read_statistics. If few words, if two exons belonging to different transcripts overlap in the gtf_map, then the two transcripts will belong to the same block. The randomization now considers the random projection of these blocks (and not individual transcripts). By doing this, both the genomic coverage and the transcript redundancy are manteined while randomizing          
+
+- The startPipeline.pl script was updated so that it allows for the use of exonerate ner (non-equivalent region) option
+
+- exonerateRemapping.pl was updated with the option -ner [default no]. If used the ner model implemented in exonerate will be used after that the est2genome failed in extending a blast hit up to 70% coverage.
+
+- Update read_statistic.pl. added a remove of the _tmp_ file
+
+- Updated version of read_statistic.pl. Now the randomization strategy consider the projectipon the entire blocks of overlapping transcripts, then the splitting of these into exons. By doing this the original genomic coveage is mantained, and the level of overlap among exons is still the same (inside the block of transcript, each exon will have the same relative position as in the original block)        
+
+- Changing in createDatabase.pl a forech into a while. It makes the script much more stable
+
+- New version of createDatabase. Now it is more compatible with the server needs. The old version ran a sanity check before executing the script, returning an error if the genomes headers had a strange syntax (rare caracters, spaces..). Now the script just retain in the header everything before the first space (if any). Stange symbols are changet to underscores. This header fix is done on the fly when splitting the genome in chromosome files. Then when formatting the database each fixed chromosome is passed through STDIN to xdformat. The result should be identical to the former pipeline. It is just much more comfortable to automatize. The only thing to mind is that the chromosomes have a unique identifier within the first space ecountered in the header
+
+- Updated overlap_statistics and other.cmd in the utility folder
+
+Bug Fixes
+---------
+
+- Fixed a bug in read_statistic.pl. The bug consisted in the fact that the RPKM extimation for the exons that are duplicated in more than one transcript was doubled. The fix is in the function countReadsPerExon (changed a += into a =)
+
+- Fixed xargs issue on Mac + added SCRIPTSDIR to make it runnable from any path
+
+
+0.5.1 (2012-04-27)
+==================
+
+Documentation
+-------------
+
+- Adding README.txt, INSTALL.txt and LICENSE.txt
+
+- Dependencies are listed in INSTALL.txt
+
+Bug Fixes
+---------
+
+- Fixing the naming of the temporary output when running on the cluster
+
+- Fixed the duplication of MillionMappedReads option when running on the
+  cluster
+
+0.5 (2012-04-27)
+================
+
+- First release

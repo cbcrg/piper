@@ -1,0 +1,53 @@
+PRELIMINARY REMARKS:
+1)
+This dummy tutorial is meant to show how to run the RNAmapping pipeline at very basic level.
+The goal is mapping 5 RNAs sequences to 2 nematode genomes.
+
+2)
+This tutorial provides you an input forder with:
+	-The nematode compressed genomes  
+	-A multi-FASTA file with the 5 RNA queries
+
+3)
+The pipeline supports WU-Blast and AB-Blast based mapping strategies. 
+In order to run command lines here reported for the dummyTutorial the user must have installed the following programs:
+	-WU-Blast
+	-exonerate
+	-chr_subseq
+
+
+PROCEDURE:
+#Decompressing the target genomes
+	cd dummyTutorial/input
+	gunzip *.gz
+
+
+#create the "genomes" file
+#edit the file so that it contains two lines, one for genomes. Each line have this syntax:  PATH/dummyTutorial/input/nematodeGenomeFile  nematodeName
+#for example:
+#/users/cn/gbussotti/Desktop/RNAmappingPipeLine/dummyTutorial/input/c_elegans.WS227.genomic_softmasked.fa    c_elegans
+#/users/cn/gbussotti/Desktop/RNAmappingPipeLine/dummyTutorial/input/c_briggsae.WS227.genomic_softmasked.fa   c_briggsae
+	cd RNAmappingPipeLine_V0.3
+	touch genomes
+	emacs genomes
+
+
+#Define the experiment and the mapping conditions with startPipeline.pl
+#It is possible to show all the startPipeline.pl parameters by doing ./startPipeline.pl
+##WARNING## Make sure that on your computer you call exonerate just by typing "exonerate", wu-blastn by typing "wu-blastn", xdformat by typing "xdformat", and chr_subseq by typing "chr_subseq"
+# if this is not the case it is possible to redifine it by using the following startPipeline.pl parameters: 
+#-exonerate   otherName
+#-blast       otherName
+#-xdformat    otherName
+#-chr_subseq  otherName
+	./startPipeline.pl -genomes genomes -experiment test -blast_strategy wublastn -query ../input/5_RNA_queries.fa
+
+
+#Run the pipeline
+	./executePipeline.pl -experiment test -pipeline_dir .
+
+
+
+
+OUTPUT:
+You can find both the blast and exonerate outputs in experiments/test.

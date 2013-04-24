@@ -1,0 +1,33 @@
+Dependencies
+============
+
+- AB-Blast 
+    - BLASTN 3.0PE-AB [2009-10-30] 
+    - BLASTP 3.0PE-AB [2009-10-30]
+- WuBlast
+    - BLASTN 2.0MP-WashU [04-May-2006] 
+    - BLASTP 2.0MP-WashU [04-May-2006] 
+- NCBI-Blast
+    - BlastX: Translated Query-Protein Subject BLAST
+        - blastx 2.2.23+
+    - RPS-Blast: Reverse Position Specific BLAST
+        - rpsblast 2.2.23+
+- Exonerate 2.2 
+    - exonerate version 2.2.0
+- chr_subseq
+    - pending identification
+- T-Coffee
+    - T-COFFEE Version_9.02.r1235 (2012-02-24 15:26:02 - Revision 1235 - Build 341)
+- Overlap
+    - overlap - version v3.1 (March 2010) 
+- GeneId
+    - geneid v 1.4
+- MotEvo
+    - MotEvo distribution v1.0.
+- PhyloCSF
+    - tag 20100916
+        - https://github.com/mlin/PhyloCSF/tree/20100916
+- BamTools
+    - bamtools 2.1.0
+
+

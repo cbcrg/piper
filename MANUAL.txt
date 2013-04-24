@@ -1,0 +1,253 @@
+###AIM:
+PIPER is a pipeline for the detection and mapping of long non-coding RNAs (lncRNAs). It considers 3 main independent blocks:
+1) pre-processing:  This part is needed to uniform the input file format and to apply filters for lncRNA hunting.
+                    In either of these situations the PIPER pre-proprecissing step is needed:
+                        - Input of transcripts of unkown coding potential (i.e. newly assembled transcripts from an RNAseq experiment)
+                        - Input of transcripts in exon.gtf format 
+2) mapping:         This part considers the screening of a input set of lncRNAs against the defined set of target genomes.  
+		    If the user already has a set of lncRNAs and these transcripts are in a standard FASTA format the mapping can be readily executed.
+3) quality check:   This part is meant to provide analysis to assess the quality of the mapping.
+		    The qualityCheck analysis is not automatically executed as it depends very much on the availability of extra data source (i.e. read data, chromatine marks..)
+
+###STRUCTURE:
+The pipeline is structured in this way:
+- An "allGenomeInfo" folder containing all the target genome assemblies considered in the analysis. 
+- A "script" folder, containing all the script used by PIPER in the pre-processing a and mapping steps.
+- A "qualityCheck" sub-folder containing all the tools to assess the quality of the mapping.
+- A "utility" sub-folder containing additional files.
+- An "experiment" foder containing as sub directories all the individual mapping experiments. 
+- startPipeline.pl and executePipeline.pl scripts, to repectively initialize and run the pipeline
+
+
+###EXPLANATION:
+The user has to use just two scripts: the startPipeline.pl and the executePipeline.pl.
+The first is needed to initiate a new PIPER mapping experiment, defining all the input files and all the parameters caracterizing such experiment.
+The output of the startPipeline.pl is an "experiment/newExperiment" folder. All the ouptputs of PIPER will be stored there.
+The experiment folder has this content:
+	-BLAST_OUT
+		contains the blast output for each target genome.
+	-CLUSTER_FILES
+		in the case PIPER run on the cluster, this folder will contain all the cluster related files (STDOUT, STDERR, splits..).
+	-CONFIG
+		contains the configuration files for some of the software run by PIPER.
+	-EXONERATE_OUT
+		contains the exonerate output for each blast output.
+	-RNAmapping_pipeline.txt
+		PIPER pipeline to be executed for the experiment. Contains all considered parameters and command lines.
+	-STDERR
+		contains the standard error of some of the software run by PIPER.
+	-fasta_aln
+		contains the multiple sequence alignments (MSAs) of detected homologs in fasta_aln format . 
+	-multifasta4EachTx
+		contains multifasta files of detected homologs for each query.
+	-outAlignments	
+		contains the multiple sequence alignments of detected homologs in CLUSTAL_W format.
+	-outSim	
+		contains files giving informations on the level of similarity among query and detected homologs.
+	-pre_processing			
+		in the case PIPER run the pre-processing step, all the pre-processing out files will be stored here.
+
+
+executePipeline.pl is needed to execute the pipeline up to a user defined step.
+The PIPER steps are:
+	pre_processing
+		to get queries in FASTA format if the input was exon.gtf and to apply coding potential filtering to an unknown set of transcripts. This will fill up the pre_processing folder.		
+	database
+		to format the target genomes. This step will fill up the allGenomeInfo folder.
+		--CAVEAT-- All the experiments in this PIPER installation will have the same set genome targets. If the user needs to run on another set of genomes another PIPER installation is needed.
+	blast
+		to blast the query lncRNAs against the set of target genomes. This will fill up the BLAST_OUT folder.
+	exonerate
+		to exonerate the blast outputs. This will fill up the BLAST_OUT folder.
+	prepare_mfa
+		to generate multifasta files of detected homologs for each query. This will fill up the multifasta4EachTx folder.
+	alignment
+		to generate with t_coffee multiple sequence alignments of detected homologs. This will fill up the outAlignments folder.
+	similarity
+		to generate files giving informations on the level of similarity among query and detected homologs. This will fill up the outSim folder and generate the simMatrix.csv file.
+                It will also generate the consensusSecondaryStructures and the stockholmFormatAlignments folders.
+	csf
+		to run PhyloCSF to estimate the codon substitution frequency (CSF). This will fill up the fasta_aln folder and generate the csfOut.txt file.
+
+See below for information on all the available parameters.
+
+
+
+###START PIPER:
+In order to start a new mapping experiment it is needed to run startPipeline.pl.
+startPipeline.pl takes as input a "genomes" file listing the target multiFASTA genomes.
+The file must have this syntax:    
+input_genomes_file(absolute path)   name
+Example:  
+/users/gb/genomes/mm9.fa   mouse
+/users/gb/genomes/hg19.fa  human
+By default (-pre_processing off) it takes a multi-FASTA file (-query) and screen the specified.
+The user can pre_process the input queries (-pre_processing on) by entering either a fasta file (-query) either a gtf file (-query_gtf) together with the genome corresponding to the queries (-reference_genome)
+By doing this the user can hunt new ncRNA sequences by applying different filters (none by default)
+
+SYNOPSYS:
+./startPipeline.pl -genomes fileName [-query|-query_gtf] [options]
+
+--ALL PARAMETERS--:
+-------------------------------------
+-general parameters:
+   * -query                                                                          <Default: none>
+   * -queryPromoterAnchor                                                            <Default: none>
+   * -experiment                                                                     <Default: exp_XXX>
+   * -cluster [on|off]                                                               <Default: off>
+   * -cpus                                                                           <Default: 1>
+-------------------------------------
+-pre_processing parameters:
+   * -pre_processing                                                                 <Default: off>
+   * -query_gtf                                                                      <Default: none>
+   * -reference_genome                                                               <Default: none>
+   * -link2referenceGenome                                                           <Default: off>
+   * -unstrandedGTF                                                                  <Default: off>
+-filtering parameters:	
+   #annotation filter
+     * -annotation                                                                   <Default: none>
+     * -overlapDistance                                                              <Default: 0>
+     * -overlapStrand                                                                <Default: yes>
+   #coding potential filter
+     * -codingPotential_check [on|off]                                               <Default: off>
+     * -geneid                                                                       <Default: geneid>
+     * -geneid_parameter                                                             <Default: none>
+     * -orf_score_threshold                                                          <Default: 20>
+   #rfam filter
+     * -rfam                                                                         <Default: none>
+   #blastX filter
+     * -uniprot                                                                      <Default: none>
+     * -nr                                                                           <Default: none>
+     * -blastx                                                                       <Default: blastx>
+     * -querySplits4cluster4filtering                                                <Default: 10>
+   #rpsBlast filter
+     * -pfam                                                                         <Default: none>
+     * -rpsblast                                                                     <Default: rpsblast>
+-------------------------------------
+-database parameters:
+   * -splitGenome                                                                    <Default: no>
+   * -xdformat                                                                       <Default: xdformat>
+-mapping parameters:
+   * -blast_strategy [wublastn|abblastn|wublastr|abblastr|wublastn_opt|abblastn_opt] <Default: wublastn_opt>
+   * -blast                                                                          <Default: wu-blastn>
+   * -exonerate                                                                      <Default: exonerate>
+   * -chr_subseq                                                                     <Default: chr_subseq>
+   * -exonerate_lines_mode [integer|exhaustive]                                      <Default: 1000>
+   * -exonerate_success_mode [integer|exhaustive|ortholog]                           <Default: 1>
+   * -repeatThreshold                                                                <Default: 20>
+   * -splitExonerate                                                                 <Default: no>
+   * -ner                                                                            <Default: no>
+   * -tcoffee                                                                        <Default: tcoffee>
+   * -RNAalifold                                                                     <Default: RNAalifold>
+-CSF parameters:
+   * -phyloCSF                                                                       <Default: PhyloCSF>
+   * -phyloCSFparameters                                                             <Default: 29mammals>
+   * -phyloCSFreference                                                              <Default: human>
+
+---------------------------------------------
+-query:                Input RNA multiFASTA file.
+-queryPromoterAnchor   Use this option to specify a promoterAnchoredQuery to be used for the blast mapping instead of the standard query. The idea is that the promoters of lncRNAs sequences are in general more 
+                       conserved than the transcript sequence itself, and can therefore used as anchor point for the initial blast step. 
+                       Then, for the exonerate re-alignment, the normal query sequence will be used instead (i.e. transcripts without promoters).
+                       WARNING: Corresponding query and promoterAnchoredQuery must have the same ID.
+-experimet:            Give a name to the experiment.
+-cluster:              Choose to use, if available, a SGE cluster. This would allow to use more CPUs and make PIPER faster.
+		       If set to "on" PIPER will run a blast for each species as separate jobs on the cluster. The same for exonerate.
+                       The cluster can also be used to enhance the speed of the two pre_processing step: creating query_gtf annotations out of the fasta query, and running all blast based filtering steps (i.e. blastx..)
+-cpus:                 Number of CPUs used by the various Blast, either locally, either on the nodes of the cluster. If running on the cluster it is recommendable leaving the default (i.e. 1)
+
+-pre_processing:       Activate the pre_processing block: get the query sequences and running filtering routines.
+                       By default no filter is applyied! The user must select the filters he wants to apply.
+                       Once the filtering is finished it will generate the /pre_processing/inputInfo/filterRun file. The user must remove this file in the case he wants to rerun the filtering.
+-query_gtf:            Exon.gtf (or gff) file correspongind to the query annotations. It can be used if the FASTA sequences are not available to extract the query sequences. 
+                       It is needed also when performing reciprocal blast during the exonerate remapping (to validate the reciprocal blast matches that overlap the location of the query).
+-reference_genome:     Parameter just used in combination with -query_gtf if -query is not provided. Indicate the genome file (multifasta) to whom the -query_gtf refers. This genome will be used to extract the query sequences.
+-link2referenceGenome: If the reference genome is also one of the target species, just indicate its name to skipp its formatting and just create a link to it. This option is not mandatory, but recommendable to make PipeR faster and less space demanding.
+-unstrandedGTF:	       It might happen that the information about the query sequence is missing and that the query_gtf file if poviding annotations not stranded, meaning that a certain transcript could lay either on the top of on the bottom strand. 
+                       This is the typical situation when the transcripts are estimated from a RNAseq experiment without using a protocol to keep the strand info. In this case it is needed to set the -unstrandedGTF parameter to "on", so that PipeR will extract
+                       two transcript for each annotation, one on the top strand, and one on the bottom strand. These will be both used in the downstream analysis. Such transcripts will be lables with a "_noStrandPlus" and "_noStrandMinus" respectively.       
+-annotation	       A .gtf or .gff annotation file of the reference genome (i.e. protein coding exons from GENCODE or any other source). Any transcript overlapping an annotation will be removed.
+	               WARNING: The overlap is called considering the transcript genomic loci (not the exons). It might happen that a protein coding gene is entirely embedded inside a transcript intron. This filtering routin would discard also these situations.  
+-overlapDistance       Parameter affecting the overlap with annotations. This parameter extend the genomic size of the transcripts by a certain, user defined span. Therefore these expanded annotations will be compared against the provided annotations 
+                       and removed any time they overlap. This transcript extension is not kept for further analysis and it is just used on this context. Basically, this parameter allows to select transcripts mapping at least a certain distance from the annotations.
+-overlapStrand         Parameter affecting the overlap with annotations. This parameter is used to indicate whether the overlap can happen just on the same strand or not. If the transcript ar not stranded or the annotations are not stranded,
+                       in principle one should consider the overlap happening on both strands (-overlapStrand no). If the strand information is available for both transcripts and annotations, 
+                       then the overlap should be considered just on the same strand (-overlapStrand yes, default). 
+-codingPotential_check Activate the coding potential filtering routine based on gene_id.	
+-geneid                Specify the geneid software name on your computer (default "geneid").
+-geneid_parameter      To execute the coding potential filtering you have to specify the geneid parameter file estimated on your reference species via -geneid_parameter. The parameter file for human is distributed with PipeR
+		       and here available qualityCheck/utility/human1iso_ORFfinder.param 
+-orf_score_threshold   Geneid will return an ORF score for each transcript. The user must choose a threshold to call protein coding sequences. Transcripts having an ORF score above this threshold will be discarted. To select this threshold is recommendable
+                       to do some preliminary estimates. These amount to compute the ORF score distributions for sizeable protein coding and non coding transcripts in that species. Then it is possible to choose the value that best discriminates
+                       proteins from ncRNAs (without being too much stringent, otherwise all the transcripts would be discarted).
+-rfam                  An xdformat formatted Rfam database. Any transcript matching a Rfam feature will be removed.
+-uniprot               A formatdb formatted uniprot database. Any transcript matching a uniprot protein will be removed. To do the uniprot screening PipeR uses ncbi BlastX+. 
+-nr                    A formatdb formatted nr database. Any transcript matching a nr protein will be removed. To do the nr screening PipeR uses ncbi BlastX+. 
+-blastx                Specify the ncbi-blastx+ software name on your computer (default "blastx").
+-querySplits4cluster4filtering If the cluster mode is selected, it is possible to boost the blastX filters (nr and uniprot) by dividing the query in a number of splits and run the filtering on diffent threads. The default split number is 10.
+-pfam                  Specify the Pfam database formatted for rpsblast. An already formatted Pfam database should be available here ftp://ftp.ncbi.nih.gov/pub/mmdb/cdd/little_endian/
+-rpsblast              Specify the rpsblast software name on your computer (default "rpsblast").
+-splitGenome           If the cluster mode is selected it is possible to further boost the blast search by activating this option. It amounts in formatting each chromosome of each species separately. Then when running blast all the query will be searchead against 
+                       each individual chromosome. Then the output will be concatenated. The blast evalue is adjusted properly considering as searching space the size of the entire genome (and not of just a chromosome). I is recommendable to use this option when
+                       the cluster is available. The result is identical to the one achievable with a normal formatting, but it is much faster.
+-xdformat              Specify the xdformat software name on your computer (default "xdformat").
+                       WARNING: Both AB-Blast and WU-Blast packages are provided with their own xdformat. It is therefore important that the user properly specifies, with -xdformat option, the proper one.
+-blast_strategy        Specify the Blast strategy to use: wublastn, abblastn, wublastr, abblastr, wublastn_opt and abblastn_opt.
+                       Basically you can run either wu-Blast or ab-Blast tools and using the default BlastN strategy, the BlastN parametrization (wublastn_opt and abblastn_opt) proposed in Freyhult et al (PMID 17151342) and BlastR (PMID 21624887).
+-blast                 Specify the blast software name on your computer (default "wu-blastn").
+-exonerate             Specify the exonerate software name on your computer (default "exonerate").
+-chr_subseq            Specify the chr_subseq software name on your computer (default "chr_subseq").
+-exonerate_lines_mode  PipeR will tray to realign the blast genomic reagions pointed by the blast output using exonerate. By default just the first 1000 lines will be scanned. It is possible to tell PipeR to consider a different number of lines via this parameter.
+                       In the case the purpose is to generate exhaustive annotations, then the user can select "exhaustive". By doing this the blast output list will be read till the end. 
+-exonerate_success_mode By default PipeR will stop reading the Blast output when exonerate manages to succesfully align the query to the target. However it is possible to look for multiple homologs by defining the maximum number of homologs to search (integer).
+                       It is also possble to generate exhaustive annotations, that is scanning all the blast output and returning all the successfull exonerate alignmets (exhaustive). Finally, it is possible to ask PipeR to look for orthologs. PipeR will keep
+                       scanning until it finds an ortholog. To this end the succesfull exonerate targets will be used with a reciprocal Blast to look the direct homolog in human. If the homolog overlaps to the initial query, then the sequence is kept, 
+                       that is an ortholog is called.
+-repeatThreshold       Select the maximum accepted coverage with repeats to call an homolog. The target nucleotides are considered repeats when lowercased in the target assembly. After Exonerate successfully detect an homologs, 
+		       this will be discarted in the downstream analysis if it contains too many repeats (spurious mapping)     
+-splitExonerate        If the cluster mode is selected, it is possible to boost tremendously the exonerate search by dividing the blast output by the outputs returned by each query, and use these blast output splits to run exonerate in different threads. 
+                       The results are eventually concatenated. The -splitExonerate parameter must be used to provide a rough estimation of the desired splits number. PipeR will return the best approximation to this number, according to the number of transcripts
+                       having a blast output.
+-ner                   Exonerate embeds various alignment models. The default one is called est2genome. The user can choose to use the ner model (non-equivalenced regions). This model can be useful if the target assembly shows many gaps. The ner model it is not
+                       modelling the splicing events, but rather trying to put togheter HSP blocks.
+                       WARNING: The performace of the ner model has not been validate in PipeR. At date, it only showed to be good when mapping Xist lncRNA in primates.
+-tcoffee               Specify the tcoffee software name on your computer (default "tcoffee").
+-RNAalifold            Specify the RNAalifold software name on your computer (default "RNAalifold").
+-phyloCSF              Specify the phyloCSF software name on your computer (default "phyloCSF").
+-phyloCSFparameters    To run phyloCSF it is needed to specfy a parameter file (at date just 29mammals and 12 flies are suitable options). PhyloCSF so far can be used just on two different phylogenies, 29 mammals and 12 flies. 
+                       If data do not belong to one of these phylogenies (for at least two species) csf.pl cannot be executed
+-phyloCSFreference     To run phyloCSF it is needed to specfy a reference species (default human). The specis needs to be either one of the 29 mammalian species, or one of the 12 fly species.
+
+
+
+
+
+
+###EXECUTE PIPER:
+In order to execute PipeR it is needed to run executePipeline.pl.
+This runs the pipeline for the experiment selected by the user till a certain step. This script checks that the steps already done are skipped and not performed twice.
+The available steps are: pre_processing , database , blast , exonerate , prepare_mfa , alignment , similarity , csf.
+
+SYNOPSYS:
+./executePipeline.pl -pipeline_dir positionOfPipeRInstallation -experiment experimentName -step [pre_processing|database|blast|exonerate|prepare_mfa|alignment|similarity|csf]
+
+STEPS:
+pre_processing -> Execute the preprocessing PipeR block
+database       -> Format the input target genomes (i.e. filling the allGenomeInfo folder)
+blast          -> Execute Blast (i.e. filling the BLAST_OUT folder)
+exonerate      -> Execute Exonerate (i.e. filling the EXONERATE_OUT folder)
+prepare_mfa    -> Convert the exonerate output in homologs clusters suitable for a multiple sequence alignment (i.e. filling the multifasta4EachTx folder)
+alignment      -> Run tcoffee on the lncRNA clusters (i.e. filling the outAlignments folder)
+similarity     -> Estimate the percentage similarity between each query and each target (i.e. filling the outSim folder) and generating the simMatrix.csv file summarizing all the percentage identities.
+csf            -> Run phyloCSF to generating the csfOut.txt file. To run phyloCSF it is needed to reformat the predicted multiple alignments. These reformatted files are stored in the fasta_aln folder
+
+
+###QUALITY CHECK:
+
+
+
+
+
+
+
+

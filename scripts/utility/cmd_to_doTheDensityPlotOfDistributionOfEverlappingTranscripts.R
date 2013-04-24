@@ -1,0 +1,7 @@
+data=read.table("distributionOfOverlappingTranscripts__0__mouse__.1",header=F)
+data_density=density(data$V1)
+jpeg(filename="density_transcriptOverlap_randomization1000mouseRep20_onto_mouseEnsembl65.jpeg")
+plot (data_density, xlim=c(0,300),ylab="density",xlab="transcript overlap",main="")
+polygon(data_density,col="red",border="red")
+abline(v=277,lwd=3,col="dark green")
+dev.off()

@@ -1,0 +1,73 @@
+mkdir -p heatExp
+
+#take the results
+for X in `ls experiments/mouseENCODE_one2many_freyhult/qualityCheck/reads_statistics/ | grep wg`; do NAME=`echo $X|sed -e 's/.bam_VS_mouse_all_rep20$//'`; NAME=`echo $NAME|sed -e 's/^wgEncodeCshlLongRnaSeq//'`; sort -k1 experiments/mouseENCODE_one2many_freyhult/qualityCheck/reads_statistics/$X/transcripts.rpkm > heatExp/$NAME | cut -f2; done
+
+cd heatExp
+#rename them
+mv AdrenalAdult8wksAlnRep1V2 adrenal_1
+mv AdrenalAdult8wksAlnRep2V2 adrenal_2
+mv BladderAdult8wksAlnRep1   bladder_1
+mv BladderAdult8wksAlnRep2   bladder_2
+mv CbellumAdult8wksAlnRep1   cerebellum_1
+mv CbellumAdult8wksAlnRep2   cerebellum_2
+mv CnsE11halfAlnRep1         cnsE11_1
+mv CnsE11halfAlnRep2         cnsE11_2
+mv CnsE14AlnRep1             cnsE14_1
+mv CnsE14AlnRep2             cnsE14_2
+mv CnsE18AlnRep1             cnsE18_1
+mv CnsE18AlnRep2             cnsE18_2
+mv ColonAdult8wksAlnRep1V2   colon_1
+mv ColonAdult8wksAlnRep2V2   colon_2
+mv CortexAdult8wksAlnRep1    cortex_1
+mv CortexAdult8wksAlnRep2    cortex_2
+mv DuodAdult8wksAlnRep1V2    duodenum_1
+mv DuodAdult8wksAlnRep2V2    duodenum_2
+mv FlobeAdult8wksAlnRep1     frontalLobe_1
+mv FlobeAdult8wksAlnRep2     frontalLobe_2
+mv GfatAdult8wksAlnRep1V2    genitalFatPad_1
+mv GfatAdult8wksAlnRep2V2    genitalFatPad2_2
+mv HeartAdult8wksAlnRep1V2   heart_1
+mv HeartAdult8wksAlnRep2V2   heart_2
+mv KidneyAdult8wksAlnRep1V2  kidney_1
+mv KidneyAdult8wksAlnRep2V2  kidney_2
+mv LgintAdult8wksAlnRep1V2   lgIntestine_1
+mv LgintAdult8wksAlnRep2V2   lgIntestine_2
+mv LimbE14halfAlnRep1        limb_1
+mv LimbE14halfAlnRep2        limb_2
+mv LiverAdult8wksAlnRep1V2   liver_1
+mv LiverAdult8wksAlnRep2V2   liver_2
+mv LiverE14AlnRep1           liverE14_1
+mv LiverE14AlnRep2           liverE14_2
+mv LiverE14halfAlnRep1       liverE14.5_1
+mv LiverE14halfAlnRep2       liverE14.5_2
+mv LiverE18AlnRep1           liverE18_1
+mv LiverE18AlnRep2           liverE18_2
+mv LungAdult8wksAlnRep1V2    lung_1
+mv LungAdult8wksAlnRep2V2    lung_2
+mv MamgAdult8wksAlnRep1V2    mammaryGland_1
+mv MamgAdult8wksAlnRep2V2    mammaryGland_2
+mv OvaryAdult8wksAlnRep1V2   ovary_1
+mv OvaryAdult8wksAlnRep2V2   ovary_2
+mv PlacAdult8wksAlnRep1      placenta_1
+mv PlacAdult8wksAlnRep2      placenta_2
+mv SfatAdult8wksAlnRep1V2    subcFatPad_1
+mv SfatAdult8wksAlnRep2V2    subcFatPad_2
+mv SmintAdult8wksAlnRep1V2   smIntestine_1
+mv SmintAdult8wksAlnRep2V2   smIntestine_2
+mv SplAdult8wksAlnRep1V2     spleen_1
+mv SplAdult8wksAlnRep2V2     spleen_2
+mv StomAdult8wksAlnRep1V2    stomach_1
+mv StomAdult8wksAlnRep2V2    stomach_2
+mv TestisAdult8wksAlnRep1V2  testis_1
+mv TestisAdult8wksAlnRep2V2  testis_2
+mv ThymusAdult8wksAlnRep1V2  thymus_1
+mv ThymusAdult8wksAlnRep2V2  thymus_2
+mv WbrainE14halfAlnRep1      wholeBrain_1
+mv WbrainE14halfAlnRep2      wholeBrain_2
+
+#built a map
+echo type > ../expressionMap.csv ; FIRSTCOLUMN=`ls | head -1 | tr -d "\n"`; cut -f1 $FIRSTCOLUMN >> ../expressionMap.csv
+for NAME in `ls`; do echo $NAME > ../tmp____; cut -f2 $NAME >> ../tmp____  ; paste -d "," ../expressionMap.csv ../tmp____ > ../other___ ; mv ../other___ ../expressionMap.csv       ;done
+rm  ../tmp____
+
