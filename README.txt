@@ -1,5 +1,5 @@
-Rmp RNA mapping pipeline version 0.5.1
---------------------------------------
+PIPER - RNA mapping pipeline
+============================
 
 See the INSTALL.txt file for installation instructions.
 
